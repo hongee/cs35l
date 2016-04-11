@@ -1,0 +1,79 @@
+Homework 1
+======
+
+### Exercise 1.1
+1. C-x C-f exer1.html
+2. C-s UTF-8
+3. C-s Instructions
+4. C-r HTML C-f
+5. C-s arrow M-b
+6. C-e
+7. C-a
+8. M-<
+9. C-x C-s
+10. C-x C-c
+
+### Exercise 1.2
+1. C-x C-f exer2.html
+2. M-g-g 18 C-k
+3. C-s DELETEME C-a C-k
+4. C-s HTML_comment# C-p C-a C-SP C-n C-n Backspace
+5. C-M-% <!--*--> Enter Enter .
+6. C-x C-s
+
+### Exercise 1.3
+1. C-x C-f exer3.html
+2. M-% Assignment 1 Enter Assignment 37 Enter Space Space
+3. M-< M-% UTF-8 Enter US-ASCII Enter .
+4. C-s <ol> Enter Enter
+5. C-x C-s
+
+### Exercise 1.4
+1. C-x C-f exer4.html
+2. M-> M-g-g 355
+3. C-a C-Sp C-e M-w M-g-g 17 Enter C-y Backspace C-a C-f Backspace
+4. M-> M-g-g 365
+5. C-a C-SP C-e M-w M-g-g 93 Enter C-y C-a C-f Backspace
+4. M-> M-g-g 374
+5. C-Sp C-n C-n C-n M-w M-g-g 299 Backspace C-a C-f Backspace
+6. (Removing Dashes) C-p C-f Delete C-p C-f Delete Enter
+X7. M-> M-g-g 388
+8. C-a C-SP C-e M-w M-g-g 339 Enter C-y C-k Backspace C-a C-f Backspace
+9. M-> C-SP M-g-g 354 Backspace C-/
+10. <!-- Space M-> -->
+11. M-< M-% <ol> Enter <Ol> Enter Sp Sp Sp Sp Sp Sp Sp (7 occ.)
+12. C-x C-s
+
+### Exercise 1.5
+1. C-x C-f junk/hello.c
+2. M-x compile Enter gcc hello.c -o hello
+3. M-! ./junk/hello > hello-out
+4. C-u M-! ./junk/hello
+
+#include <stdio.h>
+int
+main (void)
+{
+  char n = '\n';
+  char b = '\\';
+  char q = '"';
+  char const *p = "#include <stdio.h>%cint%cmain (void)%c{%c
+  char n = '%cn';%c  char b = '%c%c';%c  char q = '%c';%c
+  char const *p = %c%s%c;%c  printf (p, n, n, n, n, b, n, b, b,
+  n, q, n, q, p, q, n, n, n, n);%c  return 0;%c}%c";
+  printf (p, n, n, n, n, b, n, b, b, n, q, n, q, p, q, n, n, n, n);
+  return 0;
+}
+
+### Exercise 1.6
+1. C-x b *Scratch*
+2. (random) C-j
+3. Enter (setq x (random)) C-j
+4. C-a C-Sp C-e M-w Enter C-y C-r x Enter C-d y C-j
+5. Enter C-y C-r x Enter C-d z C-j
+6. Enter (* x y z) C-j
+The answer is incorrect. The multiplication overflowed the integer.
+7. M-: (* x y z)
+This also gives the octet and hexadecimal representations of the answer.
+No. The integers are likely pseudo random, and seems biased towards
+large absolute numbers.

@@ -1,0 +1,40 @@
+#!/bin/bash
+dir=$1
+files=`find $1 -type f -maxdepth 1 | sort`
+count=0
+declare -a FILE_ARR
+
+for file in $files
+do
+	FILE_ARR[$count]="$file"
+	let count=count+1
+done
+
+for (( i = 0; i < count; i++ )); do
+	#echo "${FILE_ARR[i]}"
+	if [ "${FILE_ARR[i]}" = "" ]
+	then
+		continue
+	fi
+	for (( j = i+1; j < count; j++ )); do
+		if [ "${FILE_ARR[j]}" = "" ]
+		then
+			continue
+		fi
+		#echo "${FILE_ARR[j]}"
+		cpr=`cmp ${FILE_ARR[i]} ${FILE_ARR[j]} 2>&1`
+		#echo $cpr
+		#echo $cpr
+		if [ "$cpr" == "" ];
+		then
+			#echo "${FILE_ARR[i]} MATCHES ${FILE_ARR[j]}"
+			rm ${FILE_ARR[j]}
+			ln ${FILE_ARR[i]} ${FILE_ARR[j]}
+		elif [[ "$cpr" == *"EOF"* ]]; then
+			continue
+		else
+			echo $cpr
+		fi
+	done
+	#echo -e "\n"
+done

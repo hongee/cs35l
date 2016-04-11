@@ -1,0 +1,69 @@
+Lab 1
+======
+
+1. `man -K`
+   $ man man
+
+2. `cp: /usr/bin/cp`
+   `wc: /usr/bin/wc`
+   $ whereis cp wc
+
+3. `[` - a bash built in command
+   `w` - show who is logged on and what they are doing
+   `X` - X window server
+   $ find /usr/bin -name ?
+
+4. `/usr/bin/emacs-24.3`
+   $ readlink -f /usr/bin/emacs
+
+5. `g+s`
+    - Grants the executable file the group id, allowing users to
+      use it to act like the user's current group
+   `o-x`
+    - Removes execution permission for others
+   $ man chmod
+
+6. `find -mtime -21`
+   $ man find
+
+7. `/u/cs/ugrad/hongyiz/
+    /u/cs/ugrad/hongyiz/Documents
+    /u/cs/ugrad/hongyiz/.cache/abrt
+    /u/cs/ugrad/hongyiz/lab0-handout`
+   $ find ~/ -type d -mtime -21
+
+8. 241
+   $ find /usr/bin -type l > links.txt
+   $ wc -l links.txt
+
+9. `libfreeblpriv3.so`
+   $ ls -l -t
+
+10. The environmental variable(s) LC_* - `env`
+    $ man locale
+
+11. `sort-lines
+     sort-paragraphs
+     sort-pages
+     sort-fields
+     sort-numeric-fields
+     sort-columns`
+    $ C-h r sorting Enter
+
+12. `C-M-a` moves to the beginning of the current function, or the 
+            previous function
+    `C-M-e` moves to the end of the current function, or the next function
+    `C-M-b` moves to the beginning of the current expression, or the 
+            previous expression
+    `C-M-f` moves to the end of the current expression, or the next expression
+    `C-M-h` selects/highlights the entire function
+    $ C-h r
+
+13. `C-g` cancels/quits a partially entered command, or halts the execution 
+          of a running command
+
+14. `yank` is analogous to cut and pasting in graphical text editors. yank 
+    "pastes" the last killed item.
+
+15. `dired` shows hidden files (files prefixed with `.`) 
+    while `ls -l` does not.

@@ -1,0 +1,62 @@
+CS35L Lab 2
+======
+1) `cat /usr/share/dict/words | sort -u > words`
+- sorts the shared `words` file by line and outputs it to `words`
+
+2) `curl -O http://web.cs.ucla.edu/classes/spring16/cs35L/assign/assign2.html`
+- downloads the html file to the current directory
+
+3) `cat assign2.html | tr -c 'A-Za-z' '[\n*]' > output1`
+- translates every non alphabetical character into a newline character
+
+4) `cat assign2.html | tr -cs 'A-Za-z' '[\n*]' > output2`
+- translates every non alphabetical character into a newline, squeezing
+repeated sequences of such characters replacing them with only one newline.
+
+5) `cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort`
+- this does the same as above, except it also sorts the output alphabetically
+
+6) `cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u`
+- this does the same as above, except it only keeps a unique copy of each
+line from the `tr` output
+
+7) `cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - words`
+- this pipes the output from above and compares them against the file `words`,
+displaying the lines unique to each file, and lines that appear in both files
+
+8) `cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -23 - words`
+- same as above, but shows only lines that appear in both files
+
+9) `wget http://mauimapp.com/moolelo/hwnwdseng.htm`
+- retrieves the hawaiian html file
+
+10) `cat hwnwdseng.htm | ./buildwords > hwords`
+- this runs buildwords on the hawaiian html file and pipes the
+output to hwords
+
+10) `cat assign2.html | tr -cs 'A-Za-z' '[\n*]'
+     | tr '[:upper:]' '[:lower:]'
+     | sort -u | comm -23 - hwords > hawaiianmis`
+    `wc -l hawaiianmis`
+- running the spellchecker using the hawaiian dictionary gives 399 misspelt
+words on the assignment html page
+
+10) `cat assign2.html | tr -cs 'A-Za-z' '[\n*]'
+     | tr '[:upper:]' '[:lower:]'
+     | sort -u | comm -23 - words > nmis`
+    `wc -l nmis`
+- running the spellchecker using the english dictionary gives 15 misspelt
+words on the assignment html page
+
+11) `cat hwords | tr -cs 'A-Za-z' '[\n*]'
+     | tr '[:upper:]' '[:lower:]'
+     | sort -u | comm -23 - hwords`
+- running the hawaiian spellchecker on itself will result in 45 misspelt
+words as `tr` removes the apostrophes "'". Including the character to the
+first set fixes this problem
+
+12) `comm nmis hawaiianmis`
+- the entire set of misspelt english words were marked as misspelt in
+hawaiian, so there are no words misspelt as english that were not misspelt
+as hawaiian, and the difference between the two sets are the words
+misspelt as hawaiian but not in english - e.g. web, utilities, user etc.

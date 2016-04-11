@@ -1,0 +1,23 @@
+#!/bin/bash
+
+hwords=""
+while read htmlline
+do
+  htmlline=$(echo "$htmlline" | sed 's/<[^>]*>//g')
+  if [ "$htmlline" == "" ]
+  then
+    continue
+  fi
+  IFS=' ,'
+  for word in $htmlline
+  do
+    word=$(echo "$word" | tr -d '[:blank:]' | tr "\`" "'" | tr '[:upper:]' '[:lower:]')
+    if [[ "$word" == "" || $word =~ [^pk\'mnwlhaeiou] ]]
+    then
+      continue
+    fi
+    hwords=$hwords$'\n'$word
+  done
+done
+hwords=$(echo "$hwords" | sort -u | tail -n +2)
+echo "$hwords"
