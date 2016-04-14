@@ -1,0 +1,23 @@
+CS35L Week 3 Homework
+======
+1. Q1
+  - Yes it was. The original `case_long_iso_time_style:` is a label
+    for the goto call used in the original implementation. It was hence
+    necessary to remove it and change it to an actual case statement to catch
+    the `long_iso_time_style` case.
+2. Q2
+  - If there are existing scripts or software depending on `ls` that uses/
+    filters the output using the existing ISO date formats, they would no
+    longer function. Also, the Unix month abbreviation may cause confusion
+    for non-english speakers, or may represent ambiguity if some other
+    languages uses the same abbreviations with different meanings.
+3. Q3
+  - `/dev/null` is an empty file. `randline.py` uses the python built in
+    `random` library. As the script does not check if the file is empty after
+    reading it, it passes an empty list as the argument to the `random.choice`
+    function, which results in the library throwing an `IndexError` when
+    it receives an empty list.
+4. Q4
+  - Python3 does not support the "Exception as Tuple" syntax which Python2
+    supports, as documented here - "https://www.python.org/dev/peps/pep-3110/"
+    Hence, executing with Python3 raises a syntax error.

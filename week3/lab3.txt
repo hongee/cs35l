@@ -1,0 +1,33 @@
+CS35L Week 3 Lab
+======
+1. `curl -O ftp://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz`
+  - Downloads the tarball from the gnu ftp server
+2. `tar -vxzf coreutils-7.6.tar.gz`
+  - Extracts the coreutils source
+3. `./configure`
+  - Configures the Makefile to build the project from source.
+4. `make`
+  - Compiles the project using the configuration from the Makefile
+5. `cp src/ls ../testls`
+  - Make a copy of the built `ls` binary to a separate folder for testing
+6. `cd ../testls ; touch -d 'May 1 2005' a ; ./ls -l`
+  - Opens the testing directory, creates an empty file (`a`) with an arbitrary
+    date, and executes the built `ls` binary on the current directory. The
+    bug is observed from the format of the empty file's last edited date. The
+    date is printed as `2005-05-01` rather than the Unix `May  1  2005`.
+7. `cd ../coreutils-7.6 ; vim patch_file`
+  - Creates the patch file for the patch.
+8. `patch -p1 < patch_file`
+  - Patches the `ls` source using the diff file, stripping the first slash
+    and its prefixes in the file paths.
+9. `make`
+  - Builds ls again with the patch. Only 7 commands were executed (other
+    than the relevant make commands). The `ls.o` file was recompiled, and then
+    linked to form the `ls`, `dir` and `vdir` executable binaries. Their man
+    pages were similarly regenerated. This is because `make` only executes the
+    actions on files whose dependencies have changed - and in this case since
+    `ls.c` is changed (as its modified date is newer than that of its
+    associated binaries), only the above commands were executed.
+10. `cp src/ls ../testls/pls; cd ../testls ; ./pls -l`
+  - Navigates back to the `testls` directory, and the bug is confirmed to be
+    fixed, with the dates now displaying in the Unix style.
