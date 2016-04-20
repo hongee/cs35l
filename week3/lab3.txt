@@ -15,6 +15,9 @@ CS35L Week 3 Lab
     date, and executes the built `ls` binary on the current directory. The
     bug is observed from the format of the empty file's last edited date. The
     date is printed as `2005-05-01` rather than the Unix `May  1  2005`.
+    All files also have the time included on the last edited timestamp,
+    while the native `ls` replaces the time with the year for files older
+    than one year.
 7. `cd ../coreutils-7.6 ; vim patch_file`
   - Creates the patch file for the patch.
 8. `patch -p1 < patch_file`
@@ -28,6 +31,7 @@ CS35L Week 3 Lab
     actions on files whose dependencies have changed - and in this case since
     `ls.c` is changed (as its modified date is newer than that of its
     associated binaries), only the above commands were executed.
-10. `cp src/ls ../testls/pls; cd ../testls ; ./pls -l`
-  - Navigates back to the `testls` directory, and the bug is confirmed to be
-    fixed, with the dates now displaying in the Unix style.
+10. `cp src/ls ../testls/pls; cd ../testls ; ./pls -l ; ./ls -l`
+  - Copies the patched ls, and renames it as `pls` to differentiate the new
+    file. Navigates back to the `testls` directory, and the bug is confirmed
+    to be fixed, with the dates now displaying in the Unix style.

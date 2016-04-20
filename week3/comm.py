@@ -10,18 +10,24 @@ from optparse import OptionParser
 class filelines:
     def __init__(self, filename):
         if filename == "-":
-            self.lines = sys.stdin.readlines
+            self.lines = sys.stdin.read().split()
         else:
             f = open(filename, 'r')
-            self.lines = f.readlines()
+            self.lines = f.read().split()
             f.close()
 
     def issorted(self):
         return sorted(self.lines) == self.lines
 
+#lol
+def leftpad(str, numtabs):
+    for i in range(numtabs):
+        str = "\t" + str
+    return str
+
 def main():
     version_msg = "%prog 2.0"
-    usage_msg = """%prog [OPTIONS]... FILE1 [FILE2]
+    usage_msg = """%prog [OPTIONS]... FILE1 FILE2
 
 A Python implementation of the POSIX `comm` utility.
 Reads FILE1 and FILE2 (or STDIN if FILE2 is unspecified),
@@ -51,48 +57,72 @@ lines only in FILE1; lines only in FILE2; and lines in both files"""
     try:
         file1 = filelines(args[0])
         file2 = filelines(args[1])
-    except IOError as (errno, strerror):
-        parser.error("I/O error({0}): {1}".format(errno, strerror))
+    except IOError as e:
+        parser.error("I/O error({0}): {1}".format(e.errno, e.strerror))
 
     if options.nosort == False and (not file1.issorted() or  not file2.issorted()):
         parser.error("Input files are not sorted!")
 
-    col1 = []
-    col2 = []
-    col3 = []
+    col1tab = 0
+    col2tab = 1
+    col3tab = 2
 
-    for line in file1.lines:
-        if line in file2.lines:
-            col3.append(line)
-        else:
-            col1.append(line)
+    if options.col1 == True:
+        col2tab = 0
+        col3tab -= 1
+    if options.col2 == True:
+        col3tab -= 1
 
-    for line in file2.lines:
-        if line not in file1.lines:
-            col2.append(line)
+    #print file1.lines
+    #print file2.lines
 
-    print (col1,col2,col3)
-    '''
-    try:
-        numlines = int(options.numlines)
-    except:
-        parser.error("invalid NUMLINES: {0}".
-                     format(options.numlines))
-    if numlines < 0:
-        parser.error("negative count: {0}".
-                     format(numlines))
-    if len(args) != 1:
-        parser.error("wrong number of operands")
-    input_file = args[0]
-
-    try:
-        generator = randline(input_file)
-        for index in range(numlines):
-            sys.stdout.write(generator.chooseline())
-    except IOError as (errno, strerror):
-        parser.error("I/O error({0}): {1}".
-                     format(errno, strerror))
-    '''
+    #maxcount = max(len(file1.lines), len(file2.lines))
+    if options.nosort == False:
+        i = 0
+        j = 0
+        while i < len(file1.lines) or j < len(file2.lines):
+            #print(i,j)
+            if i >= len(file1.lines):
+                #first file has ran out
+                if not options.col2:
+                    print(leftpad(file2.lines[j], col2tab))
+                j += 1
+            elif j >= len(file2.lines):
+                #second file has ran out
+                if not options.col1:
+                    print(leftpad(file1.lines[i], col1tab))
+                i += 1
+            elif file1.lines[i] > file2.lines[j]:
+                #file1.lines line is bigger, consider file2.lines line instead
+                if not options.col2:
+                    print(leftpad(file2.lines[j], col2tab))
+                j += 1
+            elif file1.lines[i] < file2.lines[j]:
+                #file2.lines line is bigger, consider file1.lines line instead
+                if not options.col1:
+                    print(leftpad(file1.lines[i], col1tab))
+                i += 1
+            else:
+                #lines equal
+                if not options.col3:
+                    print(leftpad(file1.lines[i], col3tab))
+                i += 1
+                j += 1
+    else:
+        #non-sorted comparison
+        for line in file1.lines:
+            if line in file2.lines:
+                #line exists in file2
+                file2.lines.remove(line)
+                if not options.col3:
+                    print(leftpad(line, col3tab))
+            else:
+                #line unique to file1
+                if not options.col1:
+                    print(leftpad(line, col1tab))
+        if not options.col2:
+            for line in file2.lines:
+                print(leftpad(line, col2tab))
 
 if __name__ == "__main__":
     main()

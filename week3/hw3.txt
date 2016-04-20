@@ -18,6 +18,8 @@ CS35L Week 3 Homework
     function, which results in the library throwing an `IndexError` when
     it receives an empty list.
 4. Q4
-  - Python3 does not support the "Exception as Tuple" syntax which Python2
-    supports, as documented here - "https://www.python.org/dev/peps/pep-3110/"
-    Hence, executing with Python3 raises a syntax error.
+  - An syntax error is thrown on the line
+    `except IOError as (errno, strerror):`
+    Python3 removes Tuple parameter unpacking, which does not allow the
+    error object to be automatically decomposed into the 2 parameters
+    specified in the tuple `(errno, strerror)`.
