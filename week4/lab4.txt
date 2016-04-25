@@ -5,3 +5,129 @@ CS35L Week 4 Lab
 2. `cd diffutils ; git log > ../git-log.txt`
   - Outputs a log of git commits and saves it to `git-log.txt`
 3. `git tag > ../git-tags.txt`
+  - Outputs a file with the list of tags used for diffutils.
+4. `cat git-log.txt | grep -A 10 -B 10 "maint: quote"`
+  - Use grep to find the commit hash with the specified title.
+    The hash is `62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f`.
+5. `cd diffutils; git format-patch -1 62ca21c8c1 --stdout >
+    ../quote-patch.txt`
+  - Uses `git format-patch` to create the patch file from
+    the specified commit. `-1` limits it to the topmost
+    commit.
+6. `git checkout v3.0`
+  - Check out version 3.0 of Diffutils. Switches current
+    branch to a temporal branch without a HEAD. Commits will
+    not be retained.
+7. `patch -p1 -i ../quote-patch.txt`
+  - Patches diffutils using the generated patch file. A number of files
+    were not found and the patch is skipped: `HACKING, doc/diffutils.texi,
+    man/help2man`. Patching failed at one or more hunks for some files:
+    `src/diff3.c, src/diff.c, README, README-hacking, cfg.mk`. Files
+    with failed patching have the rejects saved to a separate file.
+8. `git status`    
+  - The following files were modified:
+    ```
+    modified:   NEWS
+    modified:   README
+    modified:   TODO
+    modified:   doc/diagmeet.note
+    modified:   ms/config.bat
+    modified:   ms/config.site
+    modified:   po/en.po
+    modified:   src/analyze.c
+    modified:   src/cmp.c
+    modified:   src/context.c
+    modified:   src/diff.c
+    modified:   src/diff.h
+    modified:   src/diff3.c
+    modified:   src/dir.c
+    modified:   src/ifdef.c
+    modified:   src/io.c
+    modified:   src/sdiff.c
+    modified:   src/side.c
+    modified:   src/system.h
+    modified:   src/util.c
+    modified:   tests/help-version
+    ```
+    and the following files were added, and untracked:
+    ```
+    NEWS.orig
+    README-hacking.orig
+    README-hacking.rej
+    README.orig
+    README.rej
+    cfg.mk.orig
+    cfg.mk.rej
+    ms/config.site.orig
+    src/cmp.c.orig
+    src/context.c.orig
+    src/diff.c.orig
+    src/diff.c.rej
+    src/diff.h.orig
+    src/diff3.c.orig
+    src/diff3.c.rej
+    src/dir.c.orig
+    src/sdiff.c.orig
+    src/system.h.orig
+    src/util.c.orig
+    tests/help-version.orig
+    ```
+9. `emacs src/util.c`
+  - `C-x v =` shows the diff between the current blob and the index,
+    and shows the diff file on a new buffer.
+  - `C-x v u` reverts the modified blob to the state on the index.
+  - In the diff buffer:
+    `C-c C-a` applies the current selected hunk of the diff, with an
+    option to revert if already applied.
+    `C-c C-c` goes to the location in file of the selected hunk.
+10. `C-x C-f [file]`
+  - Opens the file which has unwanted changes.
+11. `C-x v u y Enter`
+  - Reverts the modified blob. The following files has their changes
+    reverted:
+    ```
+    modified:   NEWS
+    modified:   README
+    modified:   TODO
+    modified:   doc/diagmeet.note
+    modified:   ms/config.bat
+    modified:   ms/config.site
+    modified:   po/en.po
+    modified:   src/diff.h
+    modified:   src/system.h
+    ```
+12. Using emacs and `C-x v u, C-x c-a`, changes other than those to
+    character string constants are removed. The files that remain
+    with changes are:
+    ```
+    modified:   src/cmp.c
+    modified:   src/diff.c
+    modified:   src/diff3.c
+    modified:   src/dir.c
+    modified:   src/sdiff.c
+    modified:   src/util.c
+    ```
+13. The rejected, unapplied hunks were examined and the relevant
+    files (`diff.c, diff3.c`) were manually patched with the necessary
+    changes.
+14. `git clean -f`
+  - Removes all untracked files from disk.
+15. `git diff > ../quote-3.0-patch.txt`
+  - Creates a patch file from the existing modifications.
+16. `./bootstrap; ./configure; make `
+  - Builds `diffutils` according to `README-hacking`
+17. `src/diff . -; diff --help`
+  - Checks that the newly built `diff` does what its expected to.
+    Grave accent characters are now absent.
+18. `cd ..; mv diffutils diffutils-3.0-patch;
+     git clone git://git.savannah.gnu.org/diffutils.git;
+     mv diffutils diffutils-3.0;
+     git checkout v3.0; cd ..;
+     diffutils/src/diff -pru diffutils-3.0 diffutils-3.0-patch
+     >quote-3.0-test.txt`
+  - Clone a fresh copy of the repository, and check out v3.0 on that.
+19. `diff quote-3.0-test.txt quote-3.0-patch.txt`
+  - The files have differences within the `.git` directory which git uses,
+    and a few lines in the second file had line breaks before the line was
+    finished, possibly artifacts from editing in emacs. But none of the
+    differences seem particularly dangerous.

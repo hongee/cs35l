@@ -1,0 +1,19 @@
+CS35L Week 4 Homework
+======
+1. `git checkout v3.0; git checkout -b quote`
+  - Check out v3.0 into a new branch named "quote".
+2. `patch -p1 -i ../quote-3.0-patch.txt`
+  - Patches the current branch using the patch file created earlier.
+3. Used emacs and `C-x 4 a` to create the Changelog file.
+4. `git add -A; git commit -F ChangeLog`
+  - Stages the modifications and commits them using the ChangeLog
+    file as the message.
+5. `git format-patch HEAD -1 --stdout > ../formatted-patch.txt`
+  - Creates a formatted patch file from the last commit.
+6. `git checkout v3.0; git checkout -b partner; git am ../formatted-patch.txt;
+    ./bootstrap; ./configure; make check`
+  - Applied Luke Chui's patch file to a new branch from v3.0 and built
+    and tested the project. There did not appear to be any errors from make
+    check.
+7. `cd /u/cs/fac/eggert/src/gnu/emacs; gitk .`
+  - Runs gitk on the emacs repository.

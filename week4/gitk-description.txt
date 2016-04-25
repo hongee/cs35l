@@ -1,0 +1,16 @@
+|------------------|
+|        1         |
+|------------------|
+|   2     |    3   |
+|------------------|
+
+1 - A graphical view of the entire repository tree, displaying
+    the various commits, branching and merging, with each commit
+    showing the author and the commit message.
+
+2 - The well formatted diff file of the commit. Contains the changelog
+    comments created by the author, and the diffs for the various
+    modified files.
+
+3 - A list of changed files, along with the comments for the commit.
+    Can also be toggled to show a tree view of the repository.
