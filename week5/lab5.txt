@@ -1,0 +1,18 @@
+CS35L Week 5 Lab
+======
+1. `curl -O http://web.cs.ucla.edu/classes/spring16/cs35L/assign/coreutils-with-bug.tar.gz`
+  - Downloads the tar ball containing the buggy coreutils.
+2. `tar -xzf coreutils-with-bug.tar.gz ; cd coreutils-with-bug`
+  - Extracts the contents of the downloaded archive.
+3. `./configure ; make`
+  - Builds the buggy coreutils as is. The build failed, with the error:
+  ```
+  In file included from utimecmp.c:41:
+  utimens.h:2: error: conflicting types for 'futimens'
+  /usr/include/sys/stat.h:374: note: previous declaration of 'futimens' was here
+  ```
+  - The `utimens.h` header file declares a function signature for the function `futimens`,
+    and a function of the same name seems to now be built in to the standard library, which
+    differs in implementation, and hence causing the build to fail.
+4. `cd .. ; curl -O http://web.cs.ucla.edu/classes/spring16/cs35L/assign/coreutils.diff`
+  - Downloads the patch
