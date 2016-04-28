@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Title</title>
+    <title>CS35L Presentation</title>
     <meta charset="utf-8">
     <style>
-      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
-      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
       @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
 
-      body { font-family: 'Droid Serif'; }
-      h1, h2, h3 {
-        font-family: 'Yanone Kaffeesatz';
-        font-weight: normal;
+      body {
+        font-family: 'Open Sans';
+        font-weight: 400;
+        line-height: 2.75em;
       }
-      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+
+      h1, h2, h3 {
+        font-family: 'Open Sans';
+        font-weight: 700;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; line-height: 1.2em;
+ }
     </style>
   </head>
   <body>
@@ -21,19 +26,178 @@
 
 class: center, middle
 
-# Title
+# Javascript
 
+_JavaScript Most Popular Language: Stack Overflow Report_
+
+CS35L Spring '16
 ---
+class: middle
 
 # Agenda
 
-1. Introduction
-2. Deep-dive
-3. ...
+1. Brief History
+2. Language Features
+3. The Future
 
 ---
+# History
 
-# Introduction
+- Created in 10 days in 1995 by Brendan Eich for Netscape.
+- Has (almost) nothing to do with Java.
+- Designed as an interpreted, _event-driven_, scripting language for the web.
+
+```js
+$( "#target" ).click(function() {
+  alert( "Hello World!" );
+});
+```
+
+```html
+<div id="target">
+  Click here
+</div>
+```
+
+---
+# History
+
+- 2005: Web 2.0!
+- AJAX - _Asynchronous JavaScript and XML_
+- Rich webpages demands higher performance
+  - Google Earth / Google Maps
+- Google Chrome
+
+![V8 Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/V8_JavaScript_engine_logo_2.svg/270px-V8_JavaScript_engine_logo_2.svg.png)
+
+---
+# History
+
+- V8 does JIT compilation to machine code
+- vs Interpretation (MRI Ruby/CPython)
+  - Translate French book to English once, or translate word by word
+- Insanely fast
+- Why not use it to write server code too?
+
+```js
+var express = require('express');
+var app = express();
+
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
+});
+```
+
+---
+# Language Features
+
+- _Evented_
+  - (Almost) everything is asynchronous!
+  - I/O (slow) does not block the main thread
+
+```js
+//JS
+fs.readFile('/etc/passwd', function(err, data) {
+  if (err) throw err;
+    console.log(data);
+});
+```
+```python
+#Python
+file = open('newfile.txt', 'r')
+file_contents = file.read()
+print file_contents
+```
+---
+# Language Features
+
+- Great for webapps!
+  - Concurrency / Scalability
+  - Ruby (Rails on Unicorn) / Python (Django) do thread based concurrency
+    - Also, GIL - Global Interpreter Lock
+    - Intepreters are not thread safe - Only one thread can execute at any one time
+---
+# Language Features
+
+- _Multi-paradigm_
+  - Imperative (e.g. C)
+  - Functional
+  - Object-oriented (Prototype based, and weakly typed)
+  - Jack of all trades
+
+```js
+function Frackman(life, squirts, gold) {
+  this.life = life;
+  this.squirts = squirts;
+  this.gold = gold;
+}
+
+var fm = new Frackman(1,2,3);
+fm.sonar = 500;
+
+Frackman.prototype.speech = "Frack off!";
+```
+---
+# Language Features
+
+- Functional (Math-y!)
+
+```js
+function map(collection, func) {
+  var retCollection = collection;
+  for(var i = 0; i < collection.length; i++) {
+    retCollection[i] = func(collection[i]);
+  }
+  return retCollection;
+}
+function pow(num) {
+  return (function(i) {
+    var r = i;
+    for(var j=0; j<num; j++) {
+      r *= i;
+    }
+    return r;
+  });
+}
+var pow3 = pow(3);
+var arr = [1,2,3,4,5];
+var newarr = map(arr, pow3);
+```
+---
+# Language Features
+
+- _JSON_
+  - Javascript Object Notation
+  - More readable than XML, with less overhead
+  - De facto format of APIs
+  - V8 + JSON
+  - MongoDB / Couchbase / RethinkDB...
+---
+# Language Features
+
+- _Frontend!_
+  - React.js
+  - Angular.js
+  - big_new_thing.js
+  - ...
+  - (these slides are converted from Markdown using remark.js!)
+---
+# Future?
+
+- Language Maturity (ES2015 ECMAScript6, ES2016 ECMAScript7)
+- IoT (Intel/Microsoft)
+- WebAssembly - wasm
+- Cross Platform Scripting (`#!/usr/local/bin/node`)
+- Lots of $$$ in improving Javascript Performance
+- Better Universal Apps!
+---
+class: middle,center
+
+# Questions?
 
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js">
