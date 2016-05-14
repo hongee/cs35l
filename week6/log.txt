@@ -1,0 +1,28 @@
+CS35L Week 6 Lab
+======
+(on the remote computer)
+1. `ssh-keygen`
+  - Generates the ssh private and public key for the server
+2. `sudo useradd -d /home/cs35ssh -m cs35ssh;
+    sudo passwd cs35ssh`
+  - Creates an account for the client user (i.e. me) on the server
+3. `cd /home/cs35ssh; sudo mkdir .ssh`
+  - Creates a `.ssh` directory for the new user
+4. `sudo chown -R cs35ssh .ssh;
+    sudo chmod 700 .ssh`
+  - Reassigns permissions for the `.ssh` directory for the newly created user
+(on local)
+5. `ssh-keygen`
+  - Generates the ssh private and public keys for the client
+6. `ssh-copy-id -i cs35ssh@45.55.176.213`
+  - Copies the client's public key to the server, which adds it as an
+    authorized key.
+7. `ssh-add`
+  - Adds the private key to ssh-agent, allowing it to protect and manage
+    the private key
+8. `ssh -X cs35ssh@45.55.176.213`
+  - ssh to the remote server, with X11 forwarding enabled.
+9. `xterm`
+  - Ensure X11 forwarding is working correctly
+
+Lab Partner: Luke Chui

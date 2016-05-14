@@ -4,7 +4,7 @@ CS35L Week 5 Lab
   - Downloads the tar ball containing the buggy coreutils.
 2. `tar -xzf coreutils-with-bug.tar.gz ; cd coreutils-with-bug`
   - Extracts the contents of the downloaded archive.
-3. `./configure ; make`
+3. `./configure ]; make`
   - Builds the buggy coreutils as is. The build failed, with the error:
   ```
   In file included from utimecmp.c:41:
@@ -13,6 +13,72 @@ CS35L Week 5 Lab
   ```
   - The `utimens.h` header file declares a function signature for the function `futimens`,
     and a function of the same name seems to now be built in to the standard library, which
-    differs in implementation, and hence causing the build to fail.
+    differs in implementation, and this conflicting definition causes the build to fail.
 4. `cd .. ; curl -O http://web.cs.ucla.edu/classes/spring16/cs35L/assign/coreutils.diff`
   - Downloads the patch
+5. `cd coreutils-with-bug; patch -i ../coreutils.diff`
+  - Applies the patch. The diff file uses filenames which include a tilde `~` at the end,
+    and as such the files had to be manually specified during the patching process.
+6. `./configure; make `
+  - Rebuilds the patched coreutils.
+7. `cd ..; mkdir test; cd test; ln -s ../coreutils-with-bug/src/ls ls`
+  - Creates a test directory and creates a symlink to the just built ls.
+8. `touch -d '1918-11-11 11:00 GMT' wwi-armistice;
+    touch now;
+    sleep 1;
+    touch now1;
+    TZ=UTC0 ./ls -lt --full-time wwi-armistice now now1`
+  - Replicates the bug. As this is on the NFS drive, the output is as follows:
+  ```
+  -rw-r--r-- 1 hongyiz csugrad 0 2054-12-17 17:28:16.000000000 +0000 wwi-armistice
+  -rw-r--r-- 1 hongyiz csugrad 0 2016-04-28 16:54:25.027434000 +0000 now1
+  -rw-r--r-- 1 hongyiz csugrad 0 2016-04-28 16:54:16.675872000 +0000 now
+  ```
+  - Replicating the same steps on the temporary drive located on the system which uses
+    an ext4 file system produces the following results.
+  ```
+  -rw-r--r-- 1 hongyiz csugrad 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+  -rw-r--r-- 1 hongyiz csugrad 0 2016-04-28 16:58:24.081072025 +0000 now1
+  -rw-r--r-- 1 hongyiz csugrad 0 2016-04-28 16:58:14.865650285 +0000 now
+  ```
+  - In both cases, the ancient file was treated as if it was far in the future,
+    with the file placed above the the rest of the files when they are sorted.
+9. `gdb ls
+    (gdb) info functions
+    (gdb) break compare_mtime
+    (gdb) r -lt --full-time wwi-armistice now now1
+    (gdb) s
+    (gdb) break 48`
+  - After setting a breakpoint on the `compare_mtime` function (the most likely candidate
+    for the location of the bug, since this is a bug in the comparison of the modified timestamp),
+    and stepping through the function, I found a likely candidate for the bug at the function
+    defined in line 48 of `/lib/timespec.h` at the function `timespec_cmp`.
+    ```
+    48	  int diff = a.tv_sec - b.tv_sec;
+    49	  return diff ? diff : a.tv_nsec - b.tv_nsec;
+    ```
+    As the function potentially subtracts a very large negative number from a very large positive one,
+    an integer overflow would have occurred when comparing the timestamps on `now` and `wwi-armistice`.
+    This would result in a faulty sorting as could be seen from a quick examination of the callstack,
+    where `qsort` depends on `compare_mtime` which depends on this function to provide the sort order.
+10. `cp timespec.h old-timespec.h; vim lib/timespec.h; cd ..; make`
+  - The function is rewrote to no longer subtract the values, and instead to use comparison operators
+    to return the desired results. The project is then rebuilt, and ls is tested again in the temp
+    directory (using steps similar to above). The output is now
+    ```
+    -rw-r--r-- 1 hongyiz csugrad 0 2016-04-28 16:58:24.081072025 +0000 now1
+    -rw-r--r-- 1 hongyiz csugrad 0 2016-04-28 16:58:14.865650285 +0000 now
+    -rw-r--r-- 1 hongyiz csugrad 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+    ```
+    Showing that the patch worked in fixing the bug.
+11. `diff -u lib/old-timespec.h lib/timespec.h > ../lab5.diff; emacs lab5.diff`
+  - Create the diff, and then manually add the ChangeLog message.
+12. Home Directory vs tmp
+  - The home directory exists on a network disk using the NFS filesystem, whereas the tmp directory
+    exists locally on the SEASNET server's disk using the ext4 filesystem. As seen from above, ls
+    on the home directory results in a date far into the future (2054), whereas ls in the temp directory
+    represents the correct date (1918). As the modified timestamp for each file is stored as
+    offsets from the Unix epoch (Thursday, 1 January 1970), a time further in the past will need to be
+    stored as a negative integer. As NFS uses an unsigned integer type for its time representations,
+    the two's complement negative integer is cast to unsigned, resulting in a very large offset
+    further into the future. As the representation is signed in ext4, there is no such problem.

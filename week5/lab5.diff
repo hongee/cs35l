@@ -1,0 +1,23 @@
+2016-04-28  Hongyi Zhang  <hongyiz@lnxsrv05.seas.ucla.edu>
+
+        * timespec.h: (timespec_cmp) Modified implementation to prevent integer overflow
+          that resulted in bugs when sorting
+
+--- lib/old-timespec.h	2016-04-28 10:39:40.344174000 -0700
++++ lib/timespec.h	2016-04-28 10:45:08.377567000 -0700
+@@ -45,8 +45,13 @@
+ static inline int
+ timespec_cmp (struct timespec a, struct timespec b)
+ {
+-  int diff = a.tv_sec - b.tv_sec;
+-  return diff ? diff : a.tv_nsec - b.tv_nsec;
++  if(a.tv_sec == b.tv_sec) {
++  	return a.tv_nsec - b.tv_nsec;
++  } else if(a.tv_sec > b.tv_sec) {
++  	return 1;
++  }
++
++  return -1;
+ }
+
+ # if ! HAVE_DECL_NANOSLEEP

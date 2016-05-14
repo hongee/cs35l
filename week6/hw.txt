@@ -1,0 +1,24 @@
+CS35L Week6 Homework
+======
+1. Yes. All communication across the network is encrypted using a common session
+   key for the particular ssh session. As such, the attacker will not be able to
+   make sense of the bytes being transferred across the network. The network is
+   still technically compromised, however, as the attacker may read any other
+   information not sent across encrypted/secure channels.
+   1) The attacker would be able to see all commands typed by the clients, but
+      less a client types sensitive information into the shell (e.g. a password
+      for superuser access), the network is still not compromised as ssh has been
+      set up to use key based authentication, and as such without the key, the
+      attacker will not be able to gain shell access into either computers.
+   2) In such a scenario, as the attacker has had access the private keys of the
+      client, the network is compromised as the attacker is now able to prove
+      their identity using the compromised private key.
+
+2. `gpg --verify` checks if the data has been tampered with/changed using
+   the file sender's public key since it was last signed by the rightful
+   distributer using his private key. However, this does not prevent a malicious
+   attacker from signing and distributing the file with his own set of keys,
+   as we can only verify the integrity, but not necessarily the origin of the file.
+   A good solution would be to use a trusted certificate authority to distribute
+   and manage the public keys, and warn users when the file is found to be
+   accompanied by an unverified/unidentified public key.

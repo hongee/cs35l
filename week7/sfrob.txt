@@ -1,0 +1,74 @@
+CS35L Week 7 Lab
+======
+1. `python genfile.py > test.txt`
+  - A short python script was used to generate a number of lines for comparison.
+  ```python
+  #!/usr/bin/python
+  import random
+  import string
+
+  s = ''.join(random.choice(string.ascii_letters + ' ') for _ in range(5000))
+  print s
+  ```
+
+2. `time ./sfrob < test.txt;
+    time ./sfrobu < test.txt;
+    time ./sfrobs < test.txt`
+  - For 106 lines, (573 Comparisons)
+  ```
+  ./sfrob
+  real	0m0.003s
+  user	0m0.000s
+  sys	0m0.001s
+
+  ./sfrobu
+  real	0m0.008s
+  user	0m0.002s
+  sys	0m0.004s
+
+  ./sfrobs
+  real	0m0.037s
+  user	0m0.002s
+  sys	0m0.005s
+  ```
+  - For 923 lines, (7950 Comparisons)
+  ```
+  ./sfrob
+  real	0m0.037s
+  user	0m0.006s
+  sys	0m0.001s
+
+  ./sfrobu
+  real	0m0.058s
+  user	0m0.004s
+  sys	0m0.034s
+
+  ./sfrobs
+  real	0m0.022s
+  user	0m0.003s
+  sys	0m0.007s
+  ```
+  - For 9112 lines, (108470 Comparisons)
+  ```
+  ./sfrob
+  real	0m0.066s
+  user	0m0.038s
+  sys	0m0.003s
+
+  ./sfrobu
+  real	0m0.432s
+  user	0m0.022s
+  sys	0m0.408s
+
+  ./sfrobs
+  real	0m0.079s
+  user	0m0.036s
+  sys	0m0.013s
+  ```
+  - Based off the above numbers, there appears to be a logarithmic relationship between
+    the number of lines and the number of comparisons, consistent with the known O(nlgn)
+    average time complexity for sorting.
+
+3. From the above results, it seems that the shell script has a comparable, or even better
+   performance as compared to the two C versions. This probably implies I'm not a very good
+   programmer.

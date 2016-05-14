@@ -1,0 +1,42 @@
+CS35L Week 7 Lab
+======
+1. `python genfile.py > lotsofbytes.txt`
+  - A short python script was used to generate 5000000 random characters.
+  ```python
+  #!/usr/bin/python
+  import random
+  import string
+
+  s = ''.join(random.choice(string.ascii_letters) for _ in range(5000000))
+  print s
+  ```
+2. `strace -o strace_buf_output ./tr2b abcd efgh < lotsofbytes.txt;
+    strace -o strace_unbuf_output ./tr2u abcd efgh < lotsofbytes.txt`
+  - `strace` shows that for the buffered read/write using the library functions,
+    65536 bytes are read from stdin using the system call at any one time, and
+    is written in 1024 byte chunks, and hence makes 64 write calls for every read call.
+    For the unbuffered read/write however, there was a system call for read and write
+    for every byte in the input, leading to significant overhead.
+
+3. `strace -o strace_buf_output_file ./tr2b abcd efgh < lotsofbytes.txt 1 > bufoutput.txt;
+    strace -o strace_unbuf_output_file ./tr2u abcd efgh < lotsofbytes.txt 1 > unbufoutput.txt`
+  - When writing straight to file instead of stdout, 65536 bytes are read and written in each
+    system call for the buffered library functions, owing possibly to a smaller display buffer
+    (since stdout is displayed) and hence with less system calls overall. Unbuffered read/write
+    showed no difference in the number of system calls.
+
+4. `time ./tr2u abcd efgh < lotsofbytes.txt 1 > unbufoutput.txt`
+  ```
+    real	0m5.288s
+    user	0m0.259s
+    sys	0m4.953s
+  ```
+
+5. `time ./tr2b abcd efgh < lotsofbytes.txt 1 > bufoutput.txt`
+  ```
+    real	0m0.175s
+    user	0m0.100s
+    sys	0m0.006s
+  ```
+  - Buffered tr runs about 5s faster on 5MB of data, primarily due to the reduced overhead of syscalls
+    as shown from the times.
